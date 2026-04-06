@@ -1,0 +1,12 @@
+# Dados
+data/
+
+# Ambiente virtual
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
