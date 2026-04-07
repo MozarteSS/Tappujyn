@@ -25,17 +25,21 @@ def dtg(df, smoth_DTG=75, smoth_TGA=75):
   df['DTG_smoth'] = df['DTG'].rolling(window=int(smoth_DTG), center=True, min_periods=1).mean()
   df['massa (%)_smoth'] = df['massa (%)'].rolling(window=int(smoth_TGA), center=True, min_periods=1).mean()
 
-  print(df)
-  df_1 = df.rename(columns={'sec': 'Tempo (s)','C': 'Temperatura (°C)','mg': 'Massa (mg)','DTG': 'DTG (%/°C)','uV': 'DTA (uV)','DTG_smoth': 'DTG_s (%/°C)'})
+  df_ = df.rename(columns={'sec': 'Tempo (s)',
+                            'C': 'Temperatura (°C)',
+                            'mg': 'Massa (mg)',
+                            'DTG': 'DTG_bruto (%/°C)',
+                            'uV': 'DTA (uV)',
+                            'DTG_smoth': 'DTG (%.°C\u207B\u00B9)'})
 
   # Verifique o resultado
   #print(df_1.head())
   #print(df_1.info())
-  return df_1
+  return df_
 
 
 # definiçao da funcao de grafico
-def grafico_dtg(df, eixo_x='temperatura (C)', eixo_y1 ='massa (mg)', eixo_y2 = 'DTG_s (%/°C)', material = 'nome_do_material'):
+def grafico_dtg(df, temp_i, temp_f,eixo_x='Temperatura (°C)', eixo_y1 ='Massa (mg)', eixo_y2 = 'DTG (%.°C\u207B\u00B9)', material = 'nome_do_material'):
   # Garante que as colunas são numéricas (caso ainda não sejam)
   df[eixo_y1] = pd.to_numeric(df[eixo_y1], errors='coerce')
   df[eixo_y2] = pd.to_numeric(df[eixo_y2], errors='coerce')
@@ -55,8 +59,8 @@ def grafico_dtg(df, eixo_x='temperatura (C)', eixo_y1 ='massa (mg)', eixo_y2 = '
 
   # Cria um segundo eixo (ax2) que compartilha o mesmo eixo X
   ax2 = ax1.twinx()
-  ax2.set_xlim(20, 800)
-  ax2.set_xticks(np.arange(25, 875, 50))
+  ax2.set_xlim(temp_i-10, temp_f+10)
+  ax2.set_xticks(np.arange(temp_i-10, temp_f+10, 50))
 
   # Cor para o segundo eixo e gráfico (derivada)
   cor_eixo_y2 = 'tab:red'
@@ -100,9 +104,9 @@ def open_file(path_, smoth_DTG=75, smoth_TGA=75, temp_inicial=None, temp_final=N
       xlsx_path = path_.replace('.txt', '.xlsx')
       DF.to_excel(xlsx_path, index=False)
 
-      dtg_dta = grafico_dtg(DF, eixo_x='temperatura (C)', eixo_y1='DTG_smoth (%/°C)', eixo_y2='DTA (uV)', material = material_name)
-      tga_dtg = grafico_dtg(DF, eixo_x='temperatura (C)', eixo_y1='massa (mg)', eixo_y2='DTG_smoth (%/°C)', material = material_name)
-      tga_dta = grafico_dtg(DF, eixo_x='temperatura (C)', eixo_y1='massa (mg)', eixo_y2='DTA (uV)', material = material_name)
+      dtg_dta = grafico_dtg(DF, temp_i=temp_inicial, temp_f=temp_final, eixo_x='Temperatura (°C)', eixo_y1='DTG (%.°C\u207B\u00B9)', eixo_y2='DTA (uV)', material = material_name)
+      tga_dtg = grafico_dtg(DF, temp_i=temp_inicial, temp_f=temp_final, eixo_x='Temperatura (°C)', eixo_y1='Massa (mg)', eixo_y2='DTG (%.°C\u207B\u00B9)', material = material_name)
+      tga_dta = grafico_dtg(DF, temp_i=temp_inicial, temp_f=temp_final, eixo_x='Temperatura (°C)', eixo_y1='Massa (mg)', eixo_y2='DTA (uV)', material = material_name)
 
       return DF
   except FileNotFoundError:
