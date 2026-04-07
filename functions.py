@@ -25,16 +25,17 @@ def dtg(df, smoth_DTG=75, smoth_TGA=75):
   df['DTG_smoth'] = df['DTG'].rolling(window=int(smoth_DTG), center=True, min_periods=1).mean()
   df['massa (%)_smoth'] = df['massa (%)'].rolling(window=int(smoth_TGA), center=True, min_periods=1).mean()
 
-  df_ = df.rename(columns={'sec': 'tempo (s)','C': 'temperatura (C)','mg': 'massa (mg)','DTG': 'DTG (%/°C)','uV': 'DTA (uV)','DTG_smoth': 'DTG_smoth (%/°C)'})
+  print(df)
+  df_1 = df.rename(columns={'sec': 'Tempo (s)','C': 'Temperatura (°C)','mg': 'Massa (mg)','DTG': 'DTG (%/°C)','uV': 'DTA (uV)','DTG_smoth': 'DTG_s (%/°C)'})
 
   # Verifique o resultado
-  #print(df.head())
-  #print(df.info())
-  return df_
+  print(df_1.head())
+  #print(df_1.info())
+  return df_1
 
 
 # definiçao da funcao de grafico
-def grafico_dtg(df, eixo_x='temperatura (C)', eixo_y1 ='massa (mg)', eixo_y2 = 'DTG_smoth (%/°C)', material = 'nome_do_material'):
+def grafico_dtg(df, eixo_x='temperatura (C)', eixo_y1 ='massa (mg)', eixo_y2 = 'DTG_s (%/°C)', material = 'nome_do_material'):
   # Garante que as colunas são numéricas (caso ainda não sejam)
   df[eixo_y1] = pd.to_numeric(df[eixo_y1], errors='coerce')
   df[eixo_y2] = pd.to_numeric(df[eixo_y2], errors='coerce')
@@ -49,10 +50,13 @@ def grafico_dtg(df, eixo_x='temperatura (C)', eixo_y1 ='massa (mg)', eixo_y2 = '
   ax1.set_ylabel(eixo_y1, color=cor_eixo_y1, fontsize=14)
   ax1.plot(df[eixo_x], df[eixo_y1], color=cor_eixo_y1, label=eixo_y1)
   ax1.tick_params(axis='y', labelcolor=cor_eixo_y1)
-  ax1.grid(True, linestyle='--', alpha=0.6)
+  #ax1.grid(True, linestyle='--', alpha=0.6)
+  ax1.grid(True, color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
 
   # Cria um segundo eixo (ax2) que compartilha o mesmo eixo X
   ax2 = ax1.twinx()
+  ax2.set_xlim(20, 800)
+  ax2.set_xticks(np.arange(25, 875, 50))
 
   # Cor para o segundo eixo e gráfico (derivada)
   cor_eixo_y2 = 'tab:red'
