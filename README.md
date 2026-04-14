@@ -1,6 +1,7 @@
-# AnaliseTermicaScript
+# Tappujyn
 
-Projeto de analise termica em Python usando Jupyter Notebook.
+Thermal Analysis Project Python Using Jupyter Notebook
+Projeto de análise térmica em Python usando Jupyter Notebook.
 
 ## Estrutura
 
